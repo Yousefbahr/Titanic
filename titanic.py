@@ -49,8 +49,8 @@ categ_cols = list(train_inputs.select_dtypes(exclude=np.number).columns)
 imputer_numeric = SimpleImputer(strategy="mean")
 imputer_categ = SimpleImputer(strategy="most_frequent")
 
-imputer_numeric.fit(titanic[numeric_cols])
-imputer_categ.fit(titanic[categ_cols])
+imputer_numeric.fit(train_inputs[numeric_cols])
+imputer_categ.fit(train_inputs[categ_cols])
 
 train_inputs[categ_cols] = imputer_categ.transform(train_inputs[categ_cols])
 val_inputs[categ_cols] = imputer_categ.transform(val_inputs[categ_cols])
@@ -71,14 +71,14 @@ test_inputs[encoded_categ] = encoder.transform(test_inputs[categ_cols])
 
 # Scale
 scaler = MinMaxScaler()
-scaler.fit(titanic[numeric_cols])
+scaler.fit(train_inputs[numeric_cols])
 
 train_inputs[numeric_cols] = scaler.transform(train_inputs[numeric_cols])
 val_inputs[numeric_cols] = scaler.transform(val_inputs[numeric_cols])
 test_inputs[numeric_cols] = scaler.transform(test_inputs[numeric_cols])
 
 # model = LogisticRegression(solver="liblinear")
-model = RandomForestClassifier(n_estimators=250, n_jobs=-1, max_depth=200)
+model = RandomForestClassifier(n_estimators=250, n_jobs=-1, max_depth=200, random_state=42)
 model.fit(train_inputs[numeric_cols + encoded_categ], train_target)
 
 
